@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity } from "react-native";
 import Widget from "../components/Widget";
 
 export default function Dashboard() {
   const [data, setData] = useState([]);
+  const options = ["Available", "Second Option"]
 
   const renderItem = ({ item }) => <Widget shelter={item} />;
-  const packageId = "21c83b32-d5a8-4106-a54f-010dbe49f6f2";
 
   useEffect(() => {
     const today = new Date();
@@ -23,7 +23,7 @@ export default function Dashboard() {
           .then((csvData) => {
             const jsonData = JSON.parse(csvData);
             const lastDay = jsonData[jsonData.length - 1].OCCUPANCY_DATE;
-            console.log(lastDay)
+            //console.log(lastDay)
             const filteredData = jsonData.filter((r) => {
               const date = new Date(r.OCCUPANCY_DATE).toISOString().slice(0, 10);
               return date === lastDay ;
@@ -40,12 +40,38 @@ export default function Dashboard() {
     };
 
     fetchData();
-    console.log(data)
+    //console.log(data)
   }, []);
+
+  const handleFilterPress = (option) => {
+    if(option === "Available"){
+        var newData = data.filter(r => {
+            if(r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0)
+                return r
+        })
+        setData(newData)
+    }
+    else
+        console.log("no")
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Dashboard</Text>
+      {/* <Text style={styles.headerText}>Dashboard</Text> */}
+      <ScrollView
+        horizontal
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        {options.map((option, index) => (
+            <TouchableOpacity
+                key={index}
+                style={styles.button}
+                onPress={() => handleFilterPress(option)}
+            >
+                <Text style={styles.buttonText}>{option}</Text>
+            </TouchableOpacity>
+        ))}
+      </ScrollView>
       <FlatList
         data={data}
         keyExtractor={(item) => item._id}
@@ -64,5 +90,23 @@ const styles = StyleSheet.create({
   headerText: {
     paddingTop: 50,
     fontSize: 40,
+  },
+  scrollViewContent: {
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingBottom: 20
+  },
+  button: {
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    backgroundColor: '#007bff', // Set the button background color
+    borderRadius: 16,
+    marginRight: 8,
+    height: 25,
+
+  },
+  buttonText: {
+    color: '#ffffff', // Set the button text color
+    fontWeight: 'bold',
   },
 });
