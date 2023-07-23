@@ -1,6 +1,12 @@
+import { useScrollToTop } from "@react-navigation/native";
+import { useState } from "react";
 import { TextInput, View, Text, StyleSheet, Pressable } from "react-native";
 
 export default function Login() {
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Login</Text>
@@ -8,11 +14,17 @@ export default function Login() {
         style={styles.input}
         placeholder="Email"
         keyboardType="email-address"
+        value="email"
+        onChangeText={setEmail}
+        textContentType="emailAddress"
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
         keyboardType="default"
+        value="password"
+        onChangeText={setPassword}
+        textContentType="password"
       />
       <Pressable style={styles.pressable}>
         <View style={styles.button}>
@@ -29,8 +41,8 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: 'center'
   },
   input: {
     width: 300,
