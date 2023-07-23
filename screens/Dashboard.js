@@ -4,7 +4,8 @@ import Widget from "../components/Widget";
 
 export default function Dashboard() {
   const [data, setData] = useState([]);
-  const options = ["Available", "Second Option"]
+  const [backup, setBackUp] = useState([]);
+  const options = ["All", "Available"]
 
   const renderItem = ({ item }) => <Widget shelter={item} />;
 
@@ -49,10 +50,11 @@ export default function Dashboard() {
             if(r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0)
                 return r
         })
+        setBackUp(data)
         setData(newData)
     }
     else
-        console.log("no")
+        setData(backup)
   }
 
   return (
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 16,
     paddingVertical: 4,
-    backgroundColor: '#007bff', // Set the button background color
+    backgroundColor: '#a5a5ed', // Set the button background color
     borderRadius: 16,
     marginRight: 8,
     height: 25,
