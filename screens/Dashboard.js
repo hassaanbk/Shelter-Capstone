@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { useNavigation } from '@react-navigation/core'
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import Widget from "../components/Widget";
+import { auth } from '../firebase'
 
 export default function Dashboard() {
   const [data, setData] = useState([]);
 
   const renderItem = ({ item }) => <Widget shelter={item} />;
   const packageId = "21c83b32-d5a8-4106-a54f-010dbe49f6f2";
+  const navigation = useNavigation();
+
+  const handleSignOut = () => {
+    auth.signOut().then(() => {navigation.replace("Login")}).catch(error => alert(error.message))
+  }
 
   useEffect(() => {
     const today = new Date();
@@ -45,12 +52,16 @@ export default function Dashboard() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Dashboard</Text>
+      <Text style={styles.headerText} >Dashboard</Text>
+      <Text>Email: {auth.currentUser?.email}</Text>
       <FlatList
         data={data}
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
       />
+      <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -64,5 +75,19 @@ const styles = StyleSheet.create({
   headerText: {
     paddingTop: 50,
     fontSize: 40,
+  },
+  button: {
+    width: '100%',
+    height: 50,
+    backgroundColor: "green",
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 15
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: '600'
   },
 });
