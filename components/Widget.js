@@ -6,6 +6,7 @@ export default function Widget({ shelter }) {
             <Text style={styles.headerText}>{shelter.PROGRAM_AREA}</Text>
             <Text style={styles.text}>Organization Name: {shelter.ORGANIZATION_NAME}</Text>
             <Text style={styles.text}>Shelter Group: {shelter.SHELTER_GROUP}</Text>
+            <Text style={styles.text}>Program Model: {shelter.PROGRAM_MODEL}</Text>
             <Text style={styles.text}>Address: {shelter.LOCATION_ADDRESS}, {shelter.LOCATION_CITY} {shelter.LOCATION_POSTAL_CODE}</Text>
             <Text style={styles.text}>{shelter.UNOCCUPIED_ROOMS? "Available Rooms: " : "Available Beds: "} {shelter.UNOCCUPIED_ROOMS ? shelter.UNOCCUPIED_ROOMS : shelter.UNOCCUPIED_BEDS}</Text>
         </View>
