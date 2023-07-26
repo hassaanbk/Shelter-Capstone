@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
+
 //Components
 import Dashboard from './screens/Dashboard'
 import Login from './screens/Login';
