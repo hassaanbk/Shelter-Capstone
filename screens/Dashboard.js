@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import Widget from "../components/Widget";
+import { ActivityIndicator } from "react-native-paper";
 
 export default function Dashboard() {
   const [data, setData] = useState([]);
   const [backup, setBackUp] = useState([]);
-  const options = ["All", "Available"]
+  const [loading, setLoading] = useState(true);
+  const options = ["All", "Available"];
 
   const renderItem = ({ item }) => <Widget shelter={item} />;
 
   useEffect(() => {
     const today = new Date();
-    yesterday = new Date(today)
+    yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     const yesterdayString = yesterday.toISOString().slice(0, 10).toString();
-    
+
     const fetchData = async () => {
       try {
         const csvResponse = await fetch(
@@ -26,11 +35,15 @@ export default function Dashboard() {
             const lastDay = jsonData[jsonData.length - 1].OCCUPANCY_DATE;
             //console.log(lastDay)
             const filteredData = jsonData.filter((r) => {
-              const date = new Date(r.OCCUPANCY_DATE).toISOString().slice(0, 10);
-              return date === lastDay ;
+              const date = new Date(r.OCCUPANCY_DATE)
+                .toISOString()
+                .slice(0, 10);
+              return date === lastDay;
             });
             setData(filteredData);
-            
+          })
+          .then(() => {
+            setLoading(false)
           })
           .catch((error) => {
             console.error(error.message);
@@ -45,40 +58,45 @@ export default function Dashboard() {
   }, []);
 
   const handleFilterPress = (option) => {
-    if(option === "Available"){
-        var newData = data.filter(r => {
-            if(r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0)
-                return r
-        })
-        setBackUp(data)
-        setData(newData)
-    }
-    else
-        setData(backup)
-  }
+    if (option === "Available") {
+      var newData = data.filter((r) => {
+        if (r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0) return r;
+      });
+      setBackUp(data);
+      setData(newData);
+    } else setData(backup);
+  };
 
   return (
     <View style={styles.container}>
       {/* <Text style={styles.headerText}>Dashboard</Text> */}
-      <ScrollView
-        horizontal
-        contentContainerStyle={styles.scrollViewContent}
-      >
-        {options.map((option, index) => (
-            <TouchableOpacity
+      {loading ? (
+        <View style={styles.spinner}>
+          <ActivityIndicator size="small" color="#007bff" />
+        </View>
+      ) : (
+        <>
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.scrollViewContent}
+          >
+            {options.map((option, index) => (
+              <TouchableOpacity
                 key={index}
                 style={styles.button}
                 onPress={() => handleFilterPress(option)}
-            >
+              >
                 <Text style={styles.buttonText}>{option}</Text>
-            </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item._id}
-        renderItem={renderItem}
-      />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item._id}
+            renderItem={renderItem}
+          />
+        </>
+      )}
     </View>
   );
 }
@@ -94,21 +112,25 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   scrollViewContent: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 60,
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   button: {
     paddingHorizontal: 16,
     paddingVertical: 4,
-    backgroundColor: '#a5a5ed', // Set the button background color
+    backgroundColor: "#a5a5ed", // Set the button background color
     borderRadius: 16,
     marginRight: 8,
     height: 25,
-
   },
   buttonText: {
-    color: '#ffffff', // Set the button text color
-    fontWeight: 'bold',
+    color: "#ffffff", // Set the button text color
+    fontWeight: "bold",
+  },
+  spinner: {
+    flex: 1,
+    justifyContent: "center",
+    alignContent: "center",
   },
 });
