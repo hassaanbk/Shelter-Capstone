@@ -6,9 +6,10 @@ import {
   StyleSheet,
   FlatList, TouchableOpacity,
   ScrollView,
-  TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import Widget from "../components/Widget";
+import { auth } from '../firebase.js'
 
 export default function Dashboard() {
   const [data, setData] = useState([]);
