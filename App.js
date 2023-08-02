@@ -28,7 +28,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login}/>
+        <Stack.Screen name="Homeless Shelters" component={Login}/>
         <Stack.Screen name="Dashboard" 
           component={Dashboard}
           options={({ navigation, route }) => ({

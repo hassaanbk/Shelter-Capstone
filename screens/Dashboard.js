@@ -125,15 +125,6 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     fontSize: 40,
   },
-  button: {
-    width: '100%',
-    height: 50,
-    backgroundColor: "green",
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 15
-  },
   buttonText: {
     color: "white",
     fontSize: 20,
@@ -147,10 +138,11 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 16,
     paddingVertical: 4,
-    backgroundColor: "#a5a5ed", // Set the button background color
-    borderRadius: 16,
+    backgroundColor: "#007BFF", // Set the button background color
+    borderRadius: 3,
     marginRight: 8,
-    height: 25,
+    height: 30,
+    justifyContent: "center"
   },
   buttonText: {
     color: "#ffffff", // Set the button text color

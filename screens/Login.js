@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/core";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -15,20 +14,9 @@ const Login = ({ onLogin, navigation}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // const navigation = useNavigation();
-
-  // useEffect(()=> {
-  //   const unsubscribe = navigation.addListener('tabPress', e => {
-  //     e.preventDefault()
-  //     alert("it works")
-  //   })
-  //   return unsubscribe;
-  // }, [navigation])
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        //tesonLogin();
         navigation.replace("Dashboard");
       }
     });
@@ -60,7 +48,7 @@ const Login = ({ onLogin, navigation}) => {
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View style={styles.inputContainer}>
-        {/* <Text style={styles.header}>Login</Text> */}
+        <Text style={styles.header}>Login</Text>
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -80,14 +68,14 @@ const Login = ({ onLogin, navigation}) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleLogin} style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity onPress={handleLogin} style={styles.primaryButton}>
+          <Text style={styles.primaryButtonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSignUp}
-          style={[styles.button, {backgroundColor: "#e3d0d8"}]}
+          style={styles.secondaryButton}
         >
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.secondaryButtonText}>Register</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -112,6 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     textAlign: "center",
     paddingVertical: 20,
+    fontWeight: "bold"
   },
   button: {
     width: "100%",
@@ -136,7 +125,39 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
-  }
+  },
+  primaryButton: {
+    backgroundColor: '#007BFF', // Blue color for primary button
+    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    width:"60%"
+  },
+  primaryButtonText: {
+    color: '#FFFFFF', // White text for primary button
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#007BFF', // Blue border color for secondary button
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    width: "60%"
+  },
+  secondaryButtonText: {
+    color: '#007BFF', // Blue text for secondary button
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default Login;
