@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 
 //Libraries
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 //Components
@@ -14,40 +15,29 @@ import { useEffect, useState } from 'react';
 import { auth } from './firebase';
 
 const Tab = createMaterialBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 
 export default function App() {
   const [ isLoggedIn, setLoggedIn ] = useState(false)
-  useEffect(()=> {
-    const user = auth.currentUser;
-    setLoggedIn(!!user)
-  },[])
+
+  handleLogin = () => {
+    setLoggedIn(true)
+  }
 
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        {isLoggedIn ? (
-          <Tab.Screen 
-            name='Dashboard' 
-            component={Dashboard} 
-            options={{
-              tabBarIcon: () => (
-                <MaterialCommunityIcons name="view-dashboard" size={26} />
-              )
-            }}
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login}/>
+        <Stack.Screen name="Dashboard" 
+          component={Dashboard}
+          options={({ navigation, route }) => ({
+            headerRight: () => (
+              <Button title="Logout"/>
+            )
+          })}
           />
-        ) : (
-          <Tab.Screen   
-            name='Login' 
-            component={Login} 
-            options={{
-              tabBarIcon: () => (
-                <MaterialCommunityIcons name='login' size={26} />
-              )
-            }}
-          />
-        )}
-      </Tab.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
@@ -58,6 +48,50 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    fontFamily: "monospace"
   },
 });
+
+
+/* 
+<Tab.Navigator>
+        {isLoggedIn ? (
+          <>
+            <Tab.Screen
+              name='Dashboard'
+              options={({ route }) => ({
+                tabBarIcon: () => (
+                  <MaterialCommunityIcons name='view-dashboard' size={26} />
+                ),
+              })}
+            >
+              {(props) => (
+                // Pass the handleLogout function as a parameter to Dashboard component
+                <Dashboard {...props} handleLogout={() => setLoggedIn(false)} />
+              )}
+            </Tab.Screen>
+            <Tab.Screen
+              name='LogOut'
+              options={{
+                tabBarIcon: () => (
+                  <MaterialCommunityIcons name='logout' size={26} />
+                ),
+              }}
+            >
+              {(props) => (
+                <Login {...props} handleLogout={() => setLoggedIn(false)}/>
+              )}
+            </Tab.Screen>
+          </>
+        ) : (
+          <Tab.Screen   
+            name='Login' 
+            component={()=> <Login onLogin={handleLogin}/>} 
+            options={{
+              tabBarIcon: () => (
+                <MaterialCommunityIcons name='login' size={26} />
+              )
+            }}
+          />
+        )}
+      </Tab.Navigator>
+*/

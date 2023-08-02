@@ -11,20 +11,29 @@ import {
 } from "react-native";
 import { auth } from "../firebase";
 
-export default function Login() {
+const Login = ({ onLogin, navigation}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
+
+  // useEffect(()=> {
+  //   const unsubscribe = navigation.addListener('tabPress', e => {
+  //     e.preventDefault()
+  //     alert("it works")
+  //   })
+  //   return unsubscribe;
+  // }, [navigation])
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        //tesonLogin();
         navigation.replace("Dashboard");
       }
     });
     return unsubscribe;
-  }, []);
+  }, [navigation]);
 
   const handleSignUp = () => {
     auth
@@ -51,7 +60,7 @@ export default function Login() {
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View style={styles.inputContainer}>
-        <Text style={styles.header}>Login</Text>
+        {/* <Text style={styles.header}>Login</Text> */}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -76,7 +85,7 @@ export default function Login() {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSignUp}
-          style={[styles.button, {backgroundColor: "#30d5c8"}]}
+          style={[styles.button, {backgroundColor: "#e3d0d8"}]}
         >
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
@@ -129,3 +138,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   }
 });
+
+export default Login;

@@ -6,20 +6,20 @@ import {
   StyleSheet,
   FlatList, TouchableOpacity,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Button
 } from "react-native";
 import Widget from "../components/Widget";
 import { auth } from '../firebase.js'
 
-export default function Dashboard() {
+export default function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
   const [backup, setBackUp] = useState([]);
   const [loading, setLoading] = useState(true);
   const options = ["All", "Available"];
 
   const renderItem = ({ item }) => <Widget shelter={item} />;
-  const packageId = "21c83b32-d5a8-4106-a54f-010dbe49f6f2";
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
 
   const handleSignOut = () => {
     auth.signOut().then(() => {navigation.replace("Login")}).catch(error => alert(error.message))
@@ -30,6 +30,12 @@ export default function Dashboard() {
     yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     const yesterdayString = yesterday.toISOString().slice(0, 10).toString();
+
+    navigation.setOptions({
+        headerRight: () => (
+            <Button onPress={() => handleSignOut()} title="Logout"/>
+        ),
+    })
 
     const fetchData = async () => {
       try {
@@ -105,9 +111,6 @@ export default function Dashboard() {
           />
         </>
       )}
-      <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-        <Text style={styles.buttonText}>Sign Out</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     alignItems: "center",
-    paddingTop: 60,
+    paddingTop: 20,
     paddingBottom: 20,
   },
   button: {
