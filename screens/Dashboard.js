@@ -18,7 +18,7 @@ export default function Dashboard({ navigation }) {
   const [loading, setLoading] = useState(true);
   const options = ["All", "Available"];
 
-  const renderItem = ({ item }) => <Widget shelter={item} />;
+  const renderItem = ({ item }) => <Widget shelter={item} navigation={navigation}/>;
   //const navigation = useNavigation();
 
   const handleSignOut = () => {

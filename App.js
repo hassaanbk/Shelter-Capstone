@@ -1,42 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Button } from "react-native";
 
 //Libraries
-import { NavigationContainer } from '@react-navigation/native';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { NavigationContainer } from "@react-navigation/native";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //Components
-import Dashboard from './screens/Dashboard'
-import Login from './screens/Login';
-import { useEffect, useState } from 'react';
-import { auth } from './firebase';
+import Dashboard from "./screens/Dashboard";
+import Login from "./screens/Login";
+import { useEffect, useState } from "react";
+import { auth } from "./firebase";
+import Shelter from "./screens/Shelter";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-
 export default function App() {
-  const [ isLoggedIn, setLoggedIn ] = useState(false)
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   handleLogin = () => {
-    setLoggedIn(true)
-  }
+    setLoggedIn(true);
+  };
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Homeless Shelters" component={Login}/>
-        <Stack.Screen name="Dashboard" 
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={() => ({
+            headerTitle: "Homeless Shelter",
+          })}
+        />
+        <Stack.Screen
+          name="Dashboard"
           component={Dashboard}
           options={({ navigation, route }) => ({
-            headerRight: () => (
-              <Button title="Logout"/>
-            )
+            headerRight: () => <Button title="Logout" />,
           })}
-          />
+        />
+        <Stack.Screen
+          name="Shelter"
+          component={Shelter}
+          options={({ route }) => ({ title: route.params.name })}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -45,12 +54,11 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
-
 
 /* 
 <Tab.Navigator>
