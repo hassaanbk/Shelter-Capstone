@@ -1,29 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { useNavigation } from '@react-navigation/core'
+import { useNavigation } from "@react-navigation/core";
 import {
   View,
   Text,
   StyleSheet,
-  FlatList, TouchableOpacity,
+  FlatList,
+  TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  Button
+  Button,
 } from "react-native";
 import Widget from "../components/Widget";
-import { auth } from '../firebase.js'
+import { auth } from "../firebase.js";
 
 export default function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
   const [backup, setBackUp] = useState([]);
   const [loading, setLoading] = useState(true);
-  const options = ["All", "Available"];
+  const options = [
+    "All",
+    "Available",
+    "Room-Based Capacity",
+    "Bed-Based Capacity",
+  ];
 
-  const renderItem = ({ item }) => <Widget shelter={item} navigation={navigation}/>;
+  const renderItem = ({ item }) => (
+    <Widget shelter={item} navigation={navigation} />
+  );
   //const navigation = useNavigation();
 
   const handleSignOut = () => {
-    auth.signOut().then(() => {navigation.replace("Login")}).catch(error => alert(error.message))
-  }
+    auth
+      .signOut()
+      .then(() => {
+        navigation.replace("Login");
+      })
+      .catch((error) => alert(error.message));
+  };
 
   useEffect(() => {
     const today = new Date();
@@ -32,10 +45,10 @@ export default function Dashboard({ navigation }) {
     const yesterdayString = yesterday.toISOString().slice(0, 10).toString();
 
     navigation.setOptions({
-        headerRight: () => (
-            <Button onPress={() => handleSignOut()} title="Logout"/>
-        ),
-    })
+      headerRight: () => (
+        <Button onPress={() => handleSignOut()} title="Logout" />
+      ),
+    });
 
     const fetchData = async () => {
       try {
@@ -56,7 +69,7 @@ export default function Dashboard({ navigation }) {
             setData(filteredData);
           })
           .then(() => {
-            setLoading(false)
+            setLoading(false);
           })
           .catch((error) => {
             console.error(error.message);
@@ -71,11 +84,21 @@ export default function Dashboard({ navigation }) {
   }, []);
 
   const handleFilterPress = (option) => {
+    setBackUp(data);
     if (option === "Available") {
       var newData = data.filter((r) => {
         if (r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0) return r;
       });
-      setBackUp(data);
+      setData(newData);
+    } else if (option === "Room-Based Capcity") {
+      var newData = data.filter((r) => {
+        if (r.CAPACITY_TYPE === "Room Based Capacity") return r;
+      });
+      setData(newData);
+    } else if (option === "Bed-Based Capacity") {
+      var newData = data.filter((r) => {
+        if (r.CAPACITY_TYPE === "Bed Based Capacity") return r;
+      });
       setData(newData);
     } else setData(backup);
   };
@@ -104,7 +127,7 @@ export default function Dashboard({ navigation }) {
             ))}
           </ScrollView>
           <Text>Email: {auth.currentUser?.email}</Text>
-      <FlatList
+          <FlatList
             data={data}
             keyExtractor={(item) => item._id}
             renderItem={renderItem}
@@ -128,7 +151,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 20,
-    fontWeight: '600'
+    fontWeight: "600",
   },
   scrollViewContent: {
     alignItems: "center",
@@ -142,7 +165,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginRight: 8,
     height: 30,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   buttonText: {
     color: "#ffffff", // Set the button text color

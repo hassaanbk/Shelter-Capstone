@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Text,
@@ -14,36 +13,63 @@ export default function Shelter({ route }) {
   const address = `${shelter.LOCATION_ADDRESS}, ${shelter.LOCATION_CITY} ${shelter.LOCATION_POSTAL_CODE} ${shelter.LOCATION_PROVINCE}`;
   return (
     <View style={styles.container}>
-      <Text style={styles.programName}>Program Name: {shelter.PROGRAM_NAME}</Text>
-      <Text style={styles.shelterGroup}>Shelter Group: {shelter.SHELTER_GROUP}</Text>
-      <Text style={styles.locationName}>Location: {shelter.LOCATION_NAME}</Text>
-      <Text style={styles.sector}>Sector: {shelter.SECTOR}</Text>
-      <Text style={styles.programModel}>Program Model: {shelter.PROGRAM_MODEL}</Text>
-      <Text style={styles.capacityType}>Capacity Type: {shelter.CAPACITY_TYPE}</Text>
-      <Text style={styles.unoccupied}>
-        {shelter.UNOCCUPIED_BEDS
-          ? "Available Beds: " + shelter.UNOCCUPIED_BEDS
-          : "Available Rooms: " + shelter.UNOCCUPIED_ROOMS}
-      </Text>
-      <TouchableOpacity onPress={() => {
-        const url = Platform.OS ==='ios' ? `https://maps.apple.com/?q=${encodeURIComponent(address)}` : `https://maps.google.com/?q=${encodeURIComponent(address)}`
-        Linking.canOpenURL(url)
-            .then(supported => {
-                if(!supported)
-                    alert(`Can't handle url just copy bro: ${url}`)
-                else
-                    return Linking.openURL(url)
-            })
-            .catch(error => {
-                alert(error)
-            })
-      }}>
-        <Text style={styles.address}>{address}</Text>
-      </TouchableOpacity>
+      <View style={styles.cardContainer}>
+        <Text style={styles.programName}>{shelter.PROGRAM_NAME}</Text>
+        <Text style={styles.shelterGroup}>
+          Shelter Group: {shelter.SHELTER_GROUP}
+        </Text>
+        <Text style={styles.locationName}>
+          Location: {shelter.LOCATION_NAME}
+        </Text>
+        <Text style={styles.sector}>Sector: {shelter.SECTOR}</Text>
+        <Text style={styles.programModel}>
+          Program Model: {shelter.PROGRAM_MODEL}
+        </Text>
+        <Text style={styles.capacityType}>
+          Capacity Type: {shelter.CAPACITY_TYPE}
+        </Text>
+        <Text style={styles.unoccupied}>
+          {shelter.UNOCCUPIED_BEDS
+            ? "Available Beds: " + shelter.UNOCCUPIED_BEDS
+            : "Available Rooms: " + shelter.UNOCCUPIED_ROOMS}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            const url =
+              Platform.OS === "ios"
+                ? `https://maps.apple.com/?q=${encodeURIComponent(address)}`
+                : `https://maps.google.com/?q=${encodeURIComponent(address)}`;
+            Linking.canOpenURL(url)
+              .then((supported) => {
+                if (!supported) alert(`Can't handle url just copy bro: ${url}`);
+                else return Linking.openURL(url);
+              })
+              .catch((error) => {
+                alert(error);
+              });
+          }}
+        >
+          <Text style={styles.address}>{address}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    marginBottom: 16,
+    padding: 30,
+    elevation: 2, // For Android shadow
+    shadowColor: "#000", // For iOS shadow
+    shadowOffset: { width: 0, height: 2 }, // For iOS shadow
+    shadowOpacity: 0.2, // For iOS shadow
+    shadowRadius: 2, // For iOS shadow,
+    justifyContent: "center",
+  },
   container: {
     padding: 16,
     backgroundColor: "#f0f2f5", // Light gray background color
@@ -88,7 +114,7 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 14,
     color: "blue", // Hyperlink blue color for address text
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
   },
 });
 
