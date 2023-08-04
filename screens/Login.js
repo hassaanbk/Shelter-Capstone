@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { auth } from "../firebase";
 
+//Icons
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+
 const Login = ({ onLogin, navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,6 +50,7 @@ const Login = ({ onLogin, navigation }) => {
   return (
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View style={styles.inputContainer}>
+        <MaterialCommunityIcons name="home-roof" size={200} color="#007BFF" iconStyle={{padding: 0, margin: 0}} />
         <Text style={styles.header}>Login</Text>
         <TextInput
           style={styles.input}
@@ -95,7 +99,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 50,
     textAlign: "center",
-    paddingVertical: 20,
+    paddingBottom: 20,
     fontWeight: "bold",
   },
   button: {

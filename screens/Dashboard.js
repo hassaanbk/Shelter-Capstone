@@ -16,11 +16,25 @@ import { auth } from "../firebase.js";
 //Icon
 import { Ionicons } from '@expo/vector-icons'
 
-const getUniqueSectors = (obj) => {
+const getUniqueLocation = (obj) => {
   return obj.reduce((acc, current) => {
-      if(!acc.includes(current.SECTOR))
-          acc.push(current.SECTOR)
+      if(!acc.includes(current.ORGANIZATION_NAME))
+      {
+        const name = current.ORGANIZATION_NAME
+        acc.push(name)
+      }
+          
       return acc;
+  }, [])
+}
+
+const trimStr = (obj) => {
+  return obj.reduce((acc, current) => {
+    acc.push(current
+      .replace(/[^\w\s]/gi, '')
+      .replace(/\s+/g, '')
+      .toLowerCase())
+    return acc;
   }, [])
 }
 
@@ -41,10 +55,10 @@ const handleFilterPress = (option, updateData, resetData, data) => {
       if (r.CAPACITY_TYPE === "Bed Based Capacity") return r;
     });
     updateData(newData);
-  } else if(option === "All"){
-    resetData();
-  }
-    
+  } 
+  // else if(option === "All"){
+  //   resetData();
+  // }
   else{
 
       var newData = backup.filter(r => {
@@ -61,7 +75,6 @@ export default function Dashboard({ navigation }) {
   const [backup, setBackUp] = useState([]);
   const [loading, setLoading] = useState(true);
   const initailOptions = [
-    "All",
     "Available",
     "Mixed Adult",
     "Families",
@@ -70,7 +83,6 @@ export default function Dashboard({ navigation }) {
     "Men",
     "Room-Based Capacity",
     "Bed-Based Capacity",
-    
   ];
   const [options, setOptions] = useState(initailOptions)
 
@@ -100,7 +112,7 @@ export default function Dashboard({ navigation }) {
         <Button onPress={() => handleSignOut()} title="Logout" />
       ),
       headerLeft: () => (
-        <TouchableWithoutFeedback onPress={() => resetData()} >
+        <TouchableWithoutFeedback onPress={() => {resetData()}} >
           <Ionicons  name="refresh-sharp" size={25} color="#007BFF" iconStyle={{marginRight: 30}}/>
         </TouchableWithoutFeedback>
       ),
@@ -127,9 +139,8 @@ export default function Dashboard({ navigation }) {
           })
           .then(() => {
             setLoading(false);
-            const uniqueSectors = getUniqueSectors(data)
-            const updateOptions = [...initailOptions, ...uniqueSectors]
-            setOptions(updateOptions)
+            const locations = getUniqueLocation(data)
+            console.log(trimStr(locations))
           })
           .catch((error) => {
             console.error(error.message);

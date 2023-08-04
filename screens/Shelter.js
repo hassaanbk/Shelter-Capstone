@@ -6,14 +6,25 @@ import {
   Linking,
   TouchableOpacity,
   Platform,
+  Image,
 } from "react-native";
+
+//Import Image component
+import ImageMapping from "../components/Image";
 
 export default function Shelter({ route }) {
   const shelter = route.params.place;
+  const name = `${shelter.ORGANIZATION_NAME}`;
+  const org = name
+    .replace(/[^\w\s]/gi, "")
+    .replace(/\s+/g, "")
+    .toLowerCase();
   const address = `${shelter.LOCATION_ADDRESS}, ${shelter.LOCATION_CITY} ${shelter.LOCATION_POSTAL_CODE} ${shelter.LOCATION_PROVINCE}`;
+
   return (
     <View style={styles.container}>
       <View style={styles.cardContainer}>
+        <ImageMapping img={org} />
         <Text style={styles.programName}>{shelter.PROGRAM_NAME}</Text>
         <Text style={styles.shelterGroup}>
           Shelter Group: {shelter.SHELTER_GROUP}
