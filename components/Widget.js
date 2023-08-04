@@ -1,6 +1,7 @@
+import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function Widget({ shelter, navigation }) {
+const Widget = ({ shelter, navigation }) => {
   return (
     <TouchableOpacity
       style={styles.cardContainer}
@@ -18,8 +19,7 @@ export default function Widget({ shelter, navigation }) {
       <Text style={styles.text}>Shelter Group: {shelter.SHELTER_GROUP}</Text>
       <Text style={styles.text}>Program Model: {shelter.PROGRAM_MODEL}</Text>
       <Text style={styles.text}>
-        Address: {shelter.LOCATION_ADDRESS}, {shelter.LOCATION_CITY}{" "}
-        {shelter.LOCATION_POSTAL_CODE}
+        Location: {shelter.LOCATION_NAME}
       </Text>
       <Text style={styles.text}>
         {shelter.UNOCCUPIED_ROOMS ? "Available Rooms: " : "Available Beds: "}{" "}
@@ -68,3 +68,5 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
+
+export default Widget

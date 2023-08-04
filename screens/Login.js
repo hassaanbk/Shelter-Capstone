@@ -4,13 +4,12 @@ import {
   View,
   Text,
   StyleSheet,
-  Pressable,
   KeyboardAvoidingView,
   TouchableOpacity,
 } from "react-native";
 import { auth } from "../firebase";
 
-const Login = ({ onLogin, navigation}) => {
+const Login = ({ onLogin, navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -71,16 +70,13 @@ const Login = ({ onLogin, navigation}) => {
         <TouchableOpacity onPress={handleLogin} style={styles.primaryButton}>
           <Text style={styles.primaryButtonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleSignUp}
-          style={styles.secondaryButton}
-        >
+        <TouchableOpacity onPress={handleSignUp} style={styles.secondaryButton}>
           <Text style={styles.secondaryButtonText}>Register</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -89,18 +85,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    width: 300,
+    width: "80%",
     borderWidth: 1,
     borderColor: "grey",
     padding: 20,
     margin: 10,
-    borderRadius: 20,
+    borderRadius: 10,
   },
   header: {
     fontSize: 50,
     textAlign: "center",
     paddingVertical: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   button: {
     width: "100%",
@@ -110,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
-    margin: 5
+    margin: 5,
   },
   buttonText: {
     color: "white",
@@ -118,7 +114,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   inputContainer: {
-    width: "80%",
+    width: "100%",
+    alignItems: "center",
   },
   buttonContainer: {
     width: "60%",
@@ -127,36 +124,36 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   primaryButton: {
-    backgroundColor: '#007BFF', // Blue color for primary button
-    borderRadius: 20,
-    paddingVertical: 12,
+    backgroundColor: "#007BFF", // Blue color for primary button
+    borderRadius: 10,
+    paddingVertical: 15,
     paddingHorizontal: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 12,
-    width:"60%"
+    width: "60%",
   },
   primaryButtonText: {
-    color: '#FFFFFF', // White text for primary button
+    color: "#FFFFFF", // White text for primary button
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   secondaryButton: {
-    backgroundColor: 'transparent',
-    borderRadius: 20,
+    backgroundColor: "transparent",
+    borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#007BFF', // Blue border color for secondary button
-    paddingVertical: 12,
+    borderColor: "#007BFF", // Blue border color for secondary button
+    paddingVertical: 15,
     paddingHorizontal: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 12,
-    width: "60%"
+    width: "60%",
   },
   secondaryButtonText: {
-    color: '#007BFF', // Blue text for secondary button
+    color: "#007BFF", // Blue text for secondary button
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

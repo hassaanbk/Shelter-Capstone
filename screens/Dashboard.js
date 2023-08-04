@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/core";
 import {
   View,
   Text,
@@ -9,25 +8,82 @@ import {
   ScrollView,
   ActivityIndicator,
   Button,
+  TouchableWithoutFeedback,
 } from "react-native";
 import Widget from "../components/Widget";
 import { auth } from "../firebase.js";
+
+//Icon
+import { Ionicons } from '@expo/vector-icons'
+
+const getUniqueSectors = (obj) => {
+  return obj.reduce((acc, current) => {
+      if(!acc.includes(current.SECTOR))
+          acc.push(current.SECTOR)
+      return acc;
+  }, [])
+}
+
+const handleFilterPress = (option, updateData, resetData, data) => {
+  const backup = data
+  if (option === "Available") {
+    var newData = backup.filter((r) => {
+      if (r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0) return r;
+    });
+    updateData(newData);
+  } else if (option === "Room-Based Capcity") {
+    var newData = backup.filter((r) => {
+      if (r.CAPACITY_TYPE === "Room Based Capacity") return r;
+    });
+    updateData(newData);
+  } else if (option === "Bed-Based Capacity") {
+    var newData = backup.filter((r) => {
+      if (r.CAPACITY_TYPE === "Bed Based Capacity") return r;
+    });
+    updateData(newData);
+  } else if(option === "All"){
+    resetData();
+  }
+    
+  else{
+
+      var newData = backup.filter(r => {
+          if(r.SECTOR === option)
+              return r;
+      })
+      updateData(newData);
+  }
+};
+
 
 export default function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
   const [backup, setBackUp] = useState([]);
   const [loading, setLoading] = useState(true);
-  const options = [
+  const initailOptions = [
     "All",
     "Available",
+    "Mixed Adult",
+    "Families",
+    "Youth",
+    "Women",
+    "Men",
     "Room-Based Capacity",
     "Bed-Based Capacity",
+    
   ];
+  const [options, setOptions] = useState(initailOptions)
 
   const renderItem = ({ item }) => (
     <Widget shelter={item} navigation={navigation} />
   );
   //const navigation = useNavigation();
+  const updateData = (filteredData) => {
+    setData(filteredData)
+  }
+  const resetData = () => {
+    setData(backup)
+  }
 
   const handleSignOut = () => {
     auth
@@ -39,17 +95,17 @@ export default function Dashboard({ navigation }) {
   };
 
   useEffect(() => {
-    const today = new Date();
-    yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    const yesterdayString = yesterday.toISOString().slice(0, 10).toString();
-
     navigation.setOptions({
       headerRight: () => (
         <Button onPress={() => handleSignOut()} title="Logout" />
       ),
+      headerLeft: () => (
+        <TouchableWithoutFeedback onPress={() => resetData()} >
+          <Ionicons  name="refresh-sharp" size={25} color="#007BFF" iconStyle={{marginRight: 30}}/>
+        </TouchableWithoutFeedback>
+      ),
+      headerTitleAlign: 'left'
     });
-
     const fetchData = async () => {
       try {
         const csvResponse = await fetch(
@@ -67,9 +123,13 @@ export default function Dashboard({ navigation }) {
               return date === lastDay;
             });
             setData(filteredData);
+            setBackUp(filteredData);
           })
           .then(() => {
             setLoading(false);
+            const uniqueSectors = getUniqueSectors(data)
+            const updateOptions = [...initailOptions, ...uniqueSectors]
+            setOptions(updateOptions)
           })
           .catch((error) => {
             console.error(error.message);
@@ -81,46 +141,27 @@ export default function Dashboard({ navigation }) {
 
     fetchData();
     //console.log(data)
-  }, []);
-
-  const handleFilterPress = (option) => {
-    setBackUp(data);
-    if (option === "Available") {
-      var newData = data.filter((r) => {
-        if (r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0) return r;
-      });
-      setData(newData);
-    } else if (option === "Room-Based Capcity") {
-      var newData = data.filter((r) => {
-        if (r.CAPACITY_TYPE === "Room Based Capacity") return r;
-      });
-      setData(newData);
-    } else if (option === "Bed-Based Capacity") {
-      var newData = data.filter((r) => {
-        if (r.CAPACITY_TYPE === "Bed Based Capacity") return r;
-      });
-      setData(newData);
-    } else setData(backup);
-  };
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.headerText} >Dashboard</Text> */}
       {loading ? (
         <View style={styles.spinner}>
           <ActivityIndicator size="small" color="#007bff" />
+          <Text style={{padding: 20}}>This may take some time</Text>
         </View>
       ) : (
         <>
           <ScrollView
             horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.scrollViewContent}
           >
-            {options.map((option, index) => (
+            {initailOptions.map((option, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.button}
-                onPress={() => handleFilterPress(option)}
+                onPress={() => handleFilterPress(option, updateData, resetData, data)}
               >
                 <Text style={styles.buttonText}>{option}</Text>
               </TouchableOpacity>
