@@ -40,6 +40,9 @@ To run this app locally, you need to have the following installed:
 
    # For iOS
    npx react-native run-ios
+
+   # Expo CLI
+   npx expo start
    ```
 
 ## Configuration
