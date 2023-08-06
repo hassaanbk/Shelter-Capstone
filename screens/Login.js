@@ -1,3 +1,4 @@
+// Importing necessary modules from React and React Native
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -7,73 +8,85 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from "react-native";
+
+// Importing Firebase authentication module
 import { auth } from "../firebase";
 
-//Icons
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+// Importing MaterialCommunityIcons from Expo vector icons
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+// Login component handles user login and registration
 const Login = ({ onLogin, navigation }) => {
+  // State variables to hold email and password input values
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // useEffect hook to check if the user is already logged in and redirect to Dashboard
   useEffect(() => {
+    // Adding an authentication state change listener
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.replace("Dashboard");
+        navigation.replace("Dashboard"); // Redirect to Dashboard screen if the user is logged in
       }
     });
+    // Clean up the listener when the component unmounts
     return unsubscribe;
   }, [navigation]);
 
+  // Function to handle user registration
   const handleSignUp = () => {
     auth
-      .createUserWithEmailAndPassword(email, password)
-      // testing only
-      // .then(userCredentials => {
-      //   const user = userCredentials.user;
-      //   console.log('Registered: ', user.email);
-      // })
-      .catch((error) => alert(error.message));
+      .createUserWithEmailAndPassword(email, password) // Firebase function for creating a user
+      .catch((error) => alert(error.message)); // Alert an error if registration fails
   };
 
+  // Function to handle user login
   const handleLogin = () => {
     auth
-      .signInWithEmailAndPassword(email, password)
-      // testing only
-      // .then(userCredentials => {
-      //   const user = userCredentials.user;
-      //   console.log('Login: ', user.email);
-      // })
-      .catch((error) => alert(error.message));
+      .signInWithEmailAndPassword(email, password) // Firebase function for user login
+      .catch((error) => alert(error.message)); // Alert an error if login fails
   };
 
   return (
+    // A container that automatically avoids the keyboard on input fields
     <KeyboardAvoidingView style={styles.container} behaviour="padding">
       <View style={styles.inputContainer}>
-        <MaterialCommunityIcons name="home-roof" size={200} color="#007BFF" iconStyle={{padding: 0, margin: 0}} />
+        {/* App Icon */}
+        <MaterialCommunityIcons
+          name="home-roof"
+          size={200}
+          color="#007BFF"
+          iconStyle={{ padding: 0, margin: 0 }}
+        />
+        {/* Login Header */}
         <Text style={styles.header}>Login</Text>
+        {/* Email Input */}
         <TextInput
           style={styles.input}
           placeholder="Email"
           keyboardType="email-address"
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text) => setEmail(text)} // Update email state on text change
           textContentType="emailAddress"
         />
+        {/* Password Input */}
         <TextInput
           style={styles.input}
           placeholder="Password"
           keyboardType="default"
-          secureTextEntry
+          secureTextEntry // Hide the entered text as a password
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={(text) => setPassword(text)} // Update password state on text change
           textContentType="password"
         />
       </View>
+      {/* Buttons Container */}
       <View style={styles.buttonContainer}>
+        {/* Login Button */}
         <TouchableOpacity onPress={handleLogin} style={styles.primaryButton}>
           <Text style={styles.primaryButtonText}>Login</Text>
         </TouchableOpacity>
+        {/* Register Button */}
         <TouchableOpacity onPress={handleSignUp} style={styles.secondaryButton}>
           <Text style={styles.secondaryButtonText}>Register</Text>
         </TouchableOpacity>
@@ -82,6 +95,7 @@ const Login = ({ onLogin, navigation }) => {
   );
 };
 
+// Styles for the Login component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -101,21 +115,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingBottom: 20,
     fontWeight: "bold",
-  },
-  button: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#a5a5ed",
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-    margin: 5,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "600",
   },
   inputContainer: {
     width: "100%",

@@ -12,17 +12,22 @@ import {
 import ImageMapping from "../components/Image";
 
 export default function Shelter({ route }) {
+  // Extracting data from the route.params
   const shelter = route.params.place;
   const name = `${shelter.ORGANIZATION_NAME}`;
+  // Creating a simplified organization name for image mapping
   const org = name
     .replace(/[^\w\s]/gi, "")
     .replace(/\s+/g, "")
     .toLowerCase();
+  // Creating the address string
   const address = `${shelter.LOCATION_ADDRESS}, ${shelter.LOCATION_CITY} ${shelter.LOCATION_POSTAL_CODE} ${shelter.LOCATION_PROVINCE}`;
 
+  // The return statement renders the UI for the Shelter component
   return (
     <View style={styles.container}>
       <View style={styles.cardContainer}>
+        {/* Displaying an image based on the org name */}
         <ImageMapping img={org} />
         <Text style={styles.programName}>{shelter.PROGRAM_NAME}</Text>
         <Text style={styles.shelterGroup}>
@@ -43,19 +48,23 @@ export default function Shelter({ route }) {
             ? "Available Beds: " + shelter.UNOCCUPIED_BEDS
             : "Available Rooms: " + shelter.UNOCCUPIED_ROOMS}
         </Text>
+        {/* TouchableOpacity to open the shelter's location on maps */}
         <TouchableOpacity
           onPress={() => {
+            // Generating the maps URL based on the platform
             const url =
               Platform.OS === "ios"
                 ? `https://maps.apple.com/?q=${encodeURIComponent(address)}`
                 : `https://maps.google.com/?q=${encodeURIComponent(address)}`;
+
+            // Checking if the URL can be opened
             Linking.canOpenURL(url)
               .then((supported) => {
                 if (!supported) alert(`Can't handle url just copy bro: ${url}`);
-                else return Linking.openURL(url);
+                else return Linking.openURL(url); // Opening the maps URL
               })
               .catch((error) => {
-                alert(error);
+                alert(error); // Handling error if URL cannot be opened
               });
           }}
         >
@@ -65,6 +74,7 @@ export default function Shelter({ route }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: "#ffffff",
@@ -128,6 +138,7 @@ const styles = StyleSheet.create({
   },
 });
 
+// For reference and intellisence
 const obj = {
   _id: 26699,
   OCCUPANCY_DATE: "2023-07-17",

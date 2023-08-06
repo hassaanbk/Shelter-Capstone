@@ -1,6 +1,8 @@
+// Importing React and necessary components from React Native
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
 
+// Widget component displays the shelter information in a card-like format
 const Widget = ({ shelter, navigation }) => {
   return (
     <TouchableOpacity
@@ -9,9 +11,10 @@ const Widget = ({ shelter, navigation }) => {
         navigation.navigate("Shelter", {
           name: shelter.ORGANIZATION_NAME,
           place: shelter,
-        })
+        }) // Navigate to the "Shelter" screen passing the shelter name and data as parameters
       }
     >
+      {/* Displaying shelter information */}
       <Text style={styles.headerText}>{shelter.PROGRAM_AREA}</Text>
       <Text style={styles.text}>
         Organization Name: {shelter.ORGANIZATION_NAME}
@@ -22,7 +25,9 @@ const Widget = ({ shelter, navigation }) => {
         Location: {shelter.LOCATION_NAME}
       </Text>
       <Text style={styles.text}>
-        {shelter.UNOCCUPIED_ROOMS ? "Available Rooms: " : "Available Beds: "}{" "}
+        {shelter.UNOCCUPIED_ROOMS
+          ? "Available Rooms: "
+          : "Available Beds: "}{" "}
         {shelter.UNOCCUPIED_ROOMS
           ? shelter.UNOCCUPIED_ROOMS
           : shelter.UNOCCUPIED_BEDS}
@@ -31,6 +36,7 @@ const Widget = ({ shelter, navigation }) => {
   );
 }
 
+// Styles for the Widget component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -69,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Widget
+export default Widget;

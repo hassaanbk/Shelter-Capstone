@@ -1,3 +1,4 @@
+// Importing necessary modules from React and React Native
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -10,42 +11,25 @@ import {
   Button,
   TouchableWithoutFeedback,
 } from "react-native";
+
+// Importing custom components
 import Widget from "../components/Widget";
+
+// Importing Firebase authentication module
 import { auth } from "../firebase.js";
 
-//Icon
-import { Ionicons } from '@expo/vector-icons'
+// Importing Ionicons from Expo vector icons
+import { Ionicons } from "@expo/vector-icons";
 
-const getUniqueLocation = (obj) => {
-  return obj.reduce((acc, current) => {
-      if(!acc.includes(current.ORGANIZATION_NAME))
-      {
-        const name = current.ORGANIZATION_NAME
-        acc.push(name)
-      }
-          
-      return acc;
-  }, [])
-}
-
-const trimStr = (obj) => {
-  return obj.reduce((acc, current) => {
-    acc.push(current
-      .replace(/[^\w\s]/gi, '')
-      .replace(/\s+/g, '')
-      .toLowerCase())
-    return acc;
-  }, [])
-}
-
+// Function to filter data based on selected options
 const handleFilterPress = (option, updateData, resetData, data) => {
-  const backup = [...data]
+  const backup = [...data];
   if (option === "Available") {
     var newData = backup.filter((r) => {
       if (r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0) return r;
     });
     updateData(newData);
-  } else if (option === "Room-Based Capcity") {
+  } else if (option === "Room-Based Capacity") {
     var newData = backup.filter((r) => {
       if (r.CAPACITY_TYPE === "Room Based Capacity") return r;
     });
@@ -55,29 +39,26 @@ const handleFilterPress = (option, updateData, resetData, data) => {
       if (r.CAPACITY_TYPE === "Bed Based Capacity") return r;
     });
     updateData(newData);
-  } 
-  else if(option === "All"){
+  } else if (option === "All") {
     resetData();
-  }
-  else{
-      if(!backup){
-        resetData()
-      }
-
-      var newData = data.filter(r => {
-          if(r.SECTOR === option)
-              return r;
-      })
-      updateData(newData);
+  } else {
+    if (!backup) {
+      resetData();
+    }
+    var newData = data.filter((r) => {
+      if (r.SECTOR === option) return r;
+    });
+    updateData(newData);
   }
 };
 
-
+// Dashboard component displays the main dashboard screen with shelter data
 export default function Dashboard({ navigation }) {
+  // State variables to hold data, backup data, loading status, and options
   const [data, setData] = useState([]);
   const [backup, setBackUp] = useState([]);
   const [loading, setLoading] = useState(true);
-  const initailOptions = [
+  const initialOptions = [
     "All",
     "Available",
     "Mixed Adult",
@@ -88,40 +69,58 @@ export default function Dashboard({ navigation }) {
     "Room-Based Capacity",
     "Bed-Based Capacity",
   ];
-  const [options, setOptions] = useState(initailOptions)
+  const [options, setOptions] = useState(initialOptions);
 
+  // Function to render each shelter item in the FlatList
   const renderItem = ({ item }) => (
     <Widget shelter={item} navigation={navigation} />
   );
-  //const navigation = useNavigation();
-  const updateData = (filteredData) => {
-    setData(filteredData)
-  }
-  const resetData = () => {
-    setData([...backup])
-  }
 
+  // Function to update the data state with filtered data
+  const updateData = (filteredData) => {
+    setData(filteredData);
+  };
+
+  // Function to reset the data state to the original backup data
+  const resetData = () => {
+    setData([...backup]);
+  };
+
+  // Function to handle user sign-out
   const handleSignOut = () => {
     auth
       .signOut()
       .then(() => {
-        navigation.replace("Login");
+        navigation.replace("Login"); // Redirect to the Login screen after sign-out
       })
       .catch((error) => alert(error.message));
   };
 
+  // useEffect hook to fetch data and set navigation options
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Button onPress={() => handleSignOut()} title="Logout" />
-      ),
+      ), // Header right button to trigger user sign-out
       headerLeft: () => (
-        <TouchableWithoutFeedback onPress={() => {resetData()}} style={{paddingRight: 30}}>
-          <Ionicons  name="refresh-sharp" size={25} color="#007BFF" iconStyle={{marginRight: 30}}/>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            resetData();
+          }}
+          style={{ paddingRight: 30 }}
+        >
+          <Ionicons
+            name="refresh-sharp"
+            size={25}
+            color="#007BFF"
+            iconStyle={{ marginRight: 30 }}
+          />
         </TouchableWithoutFeedback>
-      ),
-      headerTitleAlign: 'left'
+      ), // Header left button to reset data using the resetData function
+      headerTitleAlign: "left", // Align the header title to the left
     });
+
+    // Function to fetch data from the provided URL
     const fetchData = async () => {
       try {
         const csvResponse = await fetch(
@@ -131,7 +130,6 @@ export default function Dashboard({ navigation }) {
           .then((csvData) => {
             const jsonData = JSON.parse(csvData);
             const lastDay = jsonData[jsonData.length - 1].OCCUPANCY_DATE;
-            //console.log(lastDay)
             const filteredData = jsonData.filter((r) => {
               const date = new Date(r.OCCUPANCY_DATE)
                 .toISOString()
@@ -142,9 +140,7 @@ export default function Dashboard({ navigation }) {
             setBackUp(filteredData);
           })
           .then(() => {
-            setLoading(false);
-            // const locations = getUniqueLocation(data)
-            // console.log(locations)
+            setLoading(false); // Set loading status to false after data fetching is done
           })
           .catch((error) => {
             console.error(error.message);
@@ -155,7 +151,6 @@ export default function Dashboard({ navigation }) {
     };
 
     fetchData();
-    //console.log(data)
   }, [navigation]);
 
   return (
@@ -163,26 +158,30 @@ export default function Dashboard({ navigation }) {
       {loading ? (
         <View style={styles.spinner}>
           <ActivityIndicator size="small" color="#007bff" />
-          <Text style={{padding: 20}}>This may take some time</Text>
+          <Text style={{ padding: 20 }}>This may take some time</Text>
         </View>
       ) : (
         <>
+          {/* ScrollView for displaying filter buttons */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.scrollViewContent}
           >
-            {initailOptions.map((option, index) => (
+            {initialOptions.map((option, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.button}
-                onPress={() => handleFilterPress(option, updateData, resetData, data)}
+                onPress={() =>
+                  handleFilterPress(option, updateData, resetData, data)
+                }
               >
                 <Text style={styles.buttonText}>{option}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
           <Text>Email: {auth.currentUser?.email}</Text>
+          {/* FlatList to display the shelter data */}
           <FlatList
             data={data}
             keyExtractor={(item) => item._id}
@@ -227,6 +226,7 @@ const styles = StyleSheet.create({
     color: "#ffffff", // Set the button text color
     fontWeight: "bold",
   },
+
   spinner: {
     flex: 1,
     justifyContent: "center",
