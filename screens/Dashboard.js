@@ -39,7 +39,7 @@ const trimStr = (obj) => {
 }
 
 const handleFilterPress = (option, updateData, resetData, data) => {
-  const backup = data
+  const backup = [...data]
   if (option === "Available") {
     var newData = backup.filter((r) => {
       if (r.UNOCCUPIED_BEDS > 0 || r.UNOCCUPIED_ROOMS > 0) return r;
@@ -56,12 +56,15 @@ const handleFilterPress = (option, updateData, resetData, data) => {
     });
     updateData(newData);
   } 
-  // else if(option === "All"){
-  //   resetData();
-  // }
+  else if(option === "All"){
+    resetData();
+  }
   else{
+      if(!backup){
+        resetData()
+      }
 
-      var newData = backup.filter(r => {
+      var newData = data.filter(r => {
           if(r.SECTOR === option)
               return r;
       })
@@ -75,6 +78,7 @@ export default function Dashboard({ navigation }) {
   const [backup, setBackUp] = useState([]);
   const [loading, setLoading] = useState(true);
   const initailOptions = [
+    "All",
     "Available",
     "Mixed Adult",
     "Families",
@@ -94,7 +98,7 @@ export default function Dashboard({ navigation }) {
     setData(filteredData)
   }
   const resetData = () => {
-    setData(backup)
+    setData([...backup])
   }
 
   const handleSignOut = () => {
@@ -112,7 +116,7 @@ export default function Dashboard({ navigation }) {
         <Button onPress={() => handleSignOut()} title="Logout" />
       ),
       headerLeft: () => (
-        <TouchableWithoutFeedback onPress={() => {resetData()}} >
+        <TouchableWithoutFeedback onPress={() => {resetData()}} style={{paddingRight: 30}}>
           <Ionicons  name="refresh-sharp" size={25} color="#007BFF" iconStyle={{marginRight: 30}}/>
         </TouchableWithoutFeedback>
       ),
@@ -139,8 +143,8 @@ export default function Dashboard({ navigation }) {
           })
           .then(() => {
             setLoading(false);
-            const locations = getUniqueLocation(data)
-            console.log(trimStr(locations))
+            // const locations = getUniqueLocation(data)
+            // console.log(locations)
           })
           .catch((error) => {
             console.error(error.message);

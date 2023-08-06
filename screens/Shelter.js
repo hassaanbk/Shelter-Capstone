@@ -6,7 +6,6 @@ import {
   Linking,
   TouchableOpacity,
   Platform,
-  Image,
 } from "react-native";
 
 //Import Image component
