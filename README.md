@@ -66,8 +66,9 @@ The app requires an internet connection to fetch real-time shelter data. Make su
 
 ## Contributors
 
-- John Doe (johndoe@example.com)
-- Jane Smith (janesmith@example.com)
+- Hassaan bin Khalil 
+- Anthony Carlascio
+- Rhina Dominguez
 
 ## License
 
