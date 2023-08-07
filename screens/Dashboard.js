@@ -70,6 +70,7 @@ export default function Dashboard({ navigation }) {
     "Bed-Based Capacity",
   ];
   const [options, setOptions] = useState(initialOptions);
+  const [count, setCount] = useState(0);
 
   // Function to render each shelter item in the FlatList
   const renderItem = ({ item }) => (
@@ -96,16 +97,24 @@ export default function Dashboard({ navigation }) {
       .catch((error) => alert(error.message));
   };
 
+  const incrementCount = () => setCount(count+1)
+
+  useEffect(() => {
+    incrementCount()
+  },[navigation])
+
   // useEffect hook to fetch data and set navigation options
   useEffect(() => {
     navigation.setOptions({
+
       headerRight: () => (
         <Button onPress={() => handleSignOut()} title="Logout" />
       ), // Header right button to trigger user sign-out
       headerLeft: () => (
         <TouchableWithoutFeedback
           onPress={() => {
-            resetData();
+            setData([]);
+            incrementCount();
           }}
           style={{ paddingRight: 30 }}
         >
@@ -119,7 +128,7 @@ export default function Dashboard({ navigation }) {
       ), // Header left button to reset data using the resetData function
       headerTitleAlign: "left", // Align the header title to the left
     });
-
+    setLoading(true)
     // Function to fetch data from the provided URL
     const fetchData = async () => {
       try {
@@ -141,6 +150,7 @@ export default function Dashboard({ navigation }) {
           })
           .then(() => {
             setLoading(false); // Set loading status to false after data fetching is done
+            
           })
           .catch((error) => {
             console.error(error.message);
@@ -151,7 +161,7 @@ export default function Dashboard({ navigation }) {
     };
 
     fetchData();
-  }, [navigation]);
+  }, [count]);
 
   return (
     <View style={styles.container}>
@@ -173,7 +183,7 @@ export default function Dashboard({ navigation }) {
                 key={index}
                 style={styles.button}
                 onPress={() =>
-                  handleFilterPress(option, updateData, resetData, data)
+                  handleFilterPress(option, updateData, resetData, backup)
                 }
               >
                 <Text style={styles.buttonText}>{option}</Text>
